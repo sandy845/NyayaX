@@ -1,0 +1,35 @@
+/* ==========================================================================
+   HETVĀBHĀSA (FALLACIES) STYLES
+   ========================================================================== */
+
+.fallacy-card {
+  background: rgba(15, 20, 31, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.25rem;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              background-color 0.3s ease,
+              box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+.fallacy-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(244, 63, 94, 0.5);
+  background: rgba(26, 18, 24, 0.75);
+  box-shadow: 0 16px 35px -10px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(244, 63, 94, 0.2);
+}
+
+.fallacy-card.active {
+  border-color: #f43f5e;
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.15) 0%, rgba(15, 20, 31, 0.9) 100%);
+  box-shadow: 0 10px 30px -5px rgba(244, 63, 94, 0.3), inset 0 1px 0 rgba(244, 63, 94, 0.4);
+}
+
+#fallacy-detail-box {
+  background: rgba(12, 16, 26, 0.85);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px -5px rgba(244, 63, 94, 0.12);
+}

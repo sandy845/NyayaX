@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYAYAX — Ancient Reasoning. Reimagined.</title>
+    <meta name="description" content="Explore Nyāya inference (Anumāna) through an interactive reasoning engine designed to make classical Indian logic understandable, interactive, and visually intuitive.">
+    <meta name="keywords" content="Nyaya logic, Anumana, Indian philosophy, classical logic, inference engine, Vyapti, Paksha, Hetu, Sadhya, Hetvabhasa">
+    <meta name="theme-color" content="#07090e">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Redirect file:// protocol to a local server for ES Module support.
+      // This redirect is intentionally ONLY for local file:// access and does
+      // NOT run on GitHub Pages (served over HTTPS) or any deployed environment.
+      if (window.location.protocol === 'file:') {
+        window.location.href = 'http://localhost:5500';
+      }
+
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              dark: '#07090e',
+              card: '#0f141f',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              outfit: ['Outfit', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+              cinzel: ['Cinzel', 'serif']
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/hero.css">
+    <link rel="stylesheet" href="css/engine.css">
+    <link rel="stylesheet" href="css/visualizers.css">
+    <link rel="stylesheet" href="css/playground.css">
+    <link rel="stylesheet" href="css/fallacies.css">
+    <link rel="stylesheet" href="css/quiz.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="bg-dark text-slate-100 antialiased selection:bg-amber-500/20 selection:text-amber-300">
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-amber-500 focus:text-slate-950 focus:rounded-md focus:font-semibold">Skip to main content</a>
+
+    <!-- Mouse Ambient Spotlight Follower -->
+    <div id="ambient-spotlight"></div>
+
+    <!-- Background Ambient Glow & Mesh -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="ambient-orb orb-amber"></div>
+        <div class="ambient-orb orb-indigo"></div>
+        <div class="ambient-orb orb-emerald"></div>
+        <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-40 py-4 px-6 md:px-12 border-b border-transparent">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="group flex items-center gap-2 text-2xl font-extrabold tracking-tight text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 rounded-lg p-1">
+                <span class="font-outfit tracking-wider text-slate-100">NYAYA</span>
+                <div class="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-slate-950 font-black text-base shadow-lg shadow-amber-500/30 group-hover:scale-105 transition-transform">
+                    <span>X</span>
+                    <span class="absolute inset-0 rounded-lg bg-amber-400 animate-ping opacity-25"></span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
+                <a href="#why" class="nav-link hover:text-amber-400">Why Nyāya</a>
+                <a href="#pramanas" class="nav-link hover:text-amber-400">Pramāṇas</a>
+                <a href="#engine" class="nav-link hover:text-amber-400">Inference Engine</a>
+                <a href="#vyapti" class="nav-link hover:text-amber-400">Vyāpti</a>
+                <a href="#triad" class="nav-link hover:text-amber-400">Triangle</a>
+                <a href="#playground" class="nav-link hover:text-amber-400">Playground</a>
+                <a href="#hetvabhasa" class="nav-link hover:text-amber-400">Fallacies</a>
+                <a href="#practice" class="nav-link hover:text-amber-400">Practice</a>
+                <a href="#glossary" class="nav-link hover:text-amber-400">Glossary</a>
+            </nav>
+
+            <!-- CTA Button + Theme Toggle -->
+            <div class="flex items-center gap-3">
+                <a href="#engine" class="btn-glow hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-bold text-sm shadow-md shadow-amber-500/20">
+                    <span>Run an Inference</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+
+                <!-- Dark/Light Mode Toggle -->
+                <button id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Theme" class="p-2 text-slate-300 hover:text-amber-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-slate-900/60 border border-slate-800 transition-all hover:border-amber-500/40">
+                    <svg id="theme-icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" aria-label="Toggle navigation menu" class="md:hidden p-2 text-slate-300 hover:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-slate-900/60 border border-slate-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 right-0 bg-slate-950/95 backdrop-blur-2xl border-b border-slate-800/80 p-6 shadow-2xl">
+            <nav class="flex flex-col gap-3 text-base font-medium text-slate-200">
+                <a href="#why" class="mobile-nav-link py-2 px-3">Why Nyāya</a>
+                <a href="#pramanas" class="mobile-nav-link py-2 px-3">Pramāṇas</a>
+                <a href="#engine" class="mobile-nav-link py-2 px-3">Inference Engine</a>
+                <a href="#vyapti" class="mobile-nav-link py-2 px-3">Vyāpti Visualizer</a>
+                <a href="#triad" class="mobile-nav-link py-2 px-3">Reasoning Triangle</a>
+                <a href="#playground" class="mobile-nav-link py-2 px-3">Playground</a>
+                <a href="#hetvabhasa" class="mobile-nav-link py-2 px-3">Hetvābhāsa (Fallacies)</a>
+                <a href="#practice" class="mobile-nav-link py-2 px-3">Practice Challenge</a>
+                <a href="#engine" class="btn-glow mt-2 text-center py-3 rounded-xl bg-amber-500 text-slate-950 font-bold">Run an Inference →</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="relative z-10 pt-28">
+
+        <!-- 10 & 11 HERO SECTION -->
+        <section id="hero" class="min-h-[85vh] flex flex-col justify-center px-6 md:px-12 max-w-7xl mx-auto py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Left Column: Copy -->
+                <div class="lg:col-span-6 space-y-6 text-left reveal-on-scroll">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-xs font-mono tracking-wide uppercase shadow-sm shadow-amber-500/10">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        Interactive Epistemology Lab
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black font-outfit tracking-tight text-white leading-[1.1]">
+                        DON'T JUST LEARN THE LOGIC. <br/>
+                        <span class="text-shimmer">RUN IT.</span>
+                    </h1>
+
+                    <p class="text-lg md:text-xl text-slate-300 max-w-xl font-normal leading-relaxed">
+                        Explore Nyāya inference (<span class="text-amber-400 font-semibold italic">Anumāna</span>) through an interactive reasoning engine designed to make classical Indian logic understandable, visual, and actionable.
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#engine" class="btn-glow px-7 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-extrabold text-base shadow-lg shadow-amber-500/25 flex items-center gap-2">
+                            <span>Run an Inference</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+                        <a href="#why" class="px-7 py-3.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700/80 text-slate-200 font-semibold text-base transition-all hover:border-amber-500/40 hover:text-white shadow-sm">
+                            Explore Nyāya
+                        </a>
+                    </div>
+
+                    <!-- Tagline subtitle -->
+                    <div class="pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs text-slate-400 font-mono tracking-wider uppercase">
+                        <span class="text-slate-500">TAGLINE:</span>
+                        <span class="text-amber-400/90 font-medium">Ancient reasoning. Reimagined.</span>
+                    </div>
+                </div>
+
+                <!-- Right Column: Hero Semantic Animation Node Flow -->
+                <div class="lg:col-span-6 reveal-on-scroll stagger-1">
+                    <div class="hero-card relative p-6 sm:p-8 rounded-3xl overflow-hidden">
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-800/80">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-rose-500/90 shadow-sm shadow-rose-500/40"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-500/90 shadow-sm shadow-amber-500/40"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-500/90 shadow-sm shadow-emerald-500/40"></span>
+                                <span class="text-xs font-mono text-slate-400 ml-2 font-semibold">NYAYA_INFERENCE_PIPELINE v2.0</span>
+                            </div>
+                            <button id="hero-pulse-toggle" class="text-xs font-mono text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-500/10 px-3 py-1 rounded-md border border-amber-500/25 hover:bg-amber-500/20 transition-all">
+                                <span>Replay Signal</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Hero Flow Nodes -->
+                        <div class="hero-nodes-container relative space-y-4">
+                            <!-- Node 1: Observation -->
+                            <div class="hero-node-item active" data-step="1">
+                                <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 transition-all duration-300">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 font-mono text-xs font-bold flex items-center justify-center border border-indigo-500/40 shadow-sm">01</span>
+                                        <div>
+                                            <div class="text-xs font-mono text-indigo-300 uppercase tracking-wider font-semibold">OBSERVATION (Mark)</div>
+                                            <div class="text-sm font-semibold text-slate-100">Smoke is visible on the hill</div>
+                                        </div>
+                                    </div>
+                                    <span class="node-status text-xs font-mono text-emerald-400 flex items-center gap-1.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                        Observed
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Connector 1 -->
+                            <div class="h-4 w-0.5 hero-connector-line bg-indigo-500/40 ml-7"></div>
+
+                            <!-- Node 2: Hetu -->
+                            <div class="hero-node-item" data-step="2">
+                                <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 transition-all duration-300">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 font-mono text-xs font-bold flex items-center justify-center border border-amber-500/40 shadow-sm">02</span>
+                                        <div>
+                                            <div class="text-xs font-mono text-amber-300 uppercase tracking-wider font-semibold">HETU (Reason)</div>
+                                            <div class="text-sm font-semibold text-slate-100">Because the hill has smoke</div>
+                                        </div>
+                                    </div>
+                                    <span class="node-status text-xs font-mono text-slate-500">Waiting</span>
+                                </div>
+                            </div>
+
+                            <!-- Connector 2 -->
+                            <div class="h-4 w-0.5 hero-connector-line bg-amber-500/40 ml-7"></div>
+
+                            <!-- Node 3: Vyapti -->
+                            <div class="hero-node-item" data-step="3">
+                                <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 transition-all duration-300">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 font-mono text-xs font-bold flex items-center justify-center border border-amber-500/40 shadow-sm">03</span>
+                                        <div>
+                                            <div class="text-xs font-mono text-amber-300 uppercase tracking-wider font-semibold">VYĀPTI (Relation)</div>
+                                            <div class="text-sm font-semibold text-slate-100">Wherever smoke, there fire (Kitchen)</div>
+                                        </div>
+                                    </div>
+                                    <span class="node-status text-xs font-mono text-slate-500">Waiting</span>
+                                </div>
+                            </div>
+
+                            <!-- Connector 3 -->
+                            <div class="h-4 w-0.5 hero-connector-line bg-rose-500/40 ml-7"></div>
+
+                            <!-- Node 4: Nigamana -->
+                            <div class="hero-node-item" data-step="4">
+                                <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 transition-all duration-300">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 font-mono text-xs font-bold flex items-center justify-center border border-rose-500/40 shadow-sm">04</span>
+                                        <div>
+                                            <div class="text-xs font-mono text-rose-300 uppercase tracking-wider font-semibold">NIGAMANA (Conclusion)</div>
+                                            <div class="text-sm font-bold text-amber-300 flex items-center gap-2">
+                                                <span>🔥 FIRE ON THE HILL</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="node-status text-xs font-mono text-slate-500">Inferred</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hero Interactive Prompt overlay -->
+                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span>Semantic flow demonstrates evidence leading to truth</span>
+                            <span class="font-mono text-amber-400 font-semibold">Anumāna Engine Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 13 SECTION: WHY NYĀYA? (Storytelling) -->
+        <section id="why" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">Epistemological Problem</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-white">
+                    HOW DO WE KNOW SOMETHING IS TRUE?
+                </h2>
+                <p class="text-slate-300 text-base md:text-lg">
+                    In a world flooded with assumptions, claims, and illusions, how do we distinguish genuine knowledge (<span class="text-amber-400 font-semibold italic">Pramā</span>) from error?
+                </p>
+            </div>
+
+            <!-- Flow Cards: Question -> Observation -> Reasoning -> Knowledge -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="story-card p-6 reveal-on-scroll stagger-1 group">
+                    <div class="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700/80 text-amber-400 flex items-center justify-center font-mono font-bold text-lg mb-6 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-slate-950 group-hover:border-amber-400 transition-all shadow-md">
+                        01
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2 font-outfit">The Question</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        You see smoke rising from a distant mountain peak. You cannot see fire directly. Is fire actually present?
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="story-card p-6 reveal-on-scroll stagger-2 group">
+                    <div class="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700/80 text-indigo-400 flex items-center justify-center font-mono font-bold text-lg mb-6 group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-slate-950 group-hover:border-indigo-400 transition-all shadow-md">
+                        02
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2 font-outfit">The Observation</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        You isolate a visible mark (<span class="text-indigo-300 font-semibold">Hetu</span>): smoke. This sign is observed directly at the locus (<span class="text-indigo-300 font-semibold">Pakṣa</span>).
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="story-card p-6 reveal-on-scroll stagger-3 group">
+                    <div class="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700/80 text-emerald-400 flex items-center justify-center font-mono font-bold text-lg mb-6 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-slate-950 group-hover:border-emerald-400 transition-all shadow-md">
+                        03
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2 font-outfit">The Reasoning</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        You retrieve the invariable connection (<span class="text-emerald-300 font-semibold">Vyāpti</span>): smoke never exists without fire, as established in a kitchen.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="story-card p-6 reveal-on-scroll stagger-4 group">
+                    <div class="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700/80 text-amber-400 flex items-center justify-center font-mono font-bold text-lg mb-6 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-slate-950 group-hover:border-amber-400 transition-all shadow-md">
+                        04
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2 font-outfit">Valid Knowledge</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        You conclude with certainty (<span class="text-amber-300 font-semibold">Nigamana</span>) that fire exists on the hill. Anumāna turns unobserved into known.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 14 SECTION: PRAMĀṆAS (Radial Epistemology Tree) -->
+        <section id="pramanas" class="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t border-slate-800/80">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Left: Info & Selected Card -->
+                <div class="lg:col-span-5 space-y-6 reveal-on-scroll">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 text-xs font-mono uppercase font-semibold">
+                        The Epistemological Foundation
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold font-outfit text-white">
+                        THE 4 SOURCES OF VALID KNOWLEDGE
+                    </h2>
+                    <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                        Nyāya recognizes four valid means of acquiring true knowledge (<span class="text-indigo-400 font-semibold">Pramāṇas</span>). Click any node on the compass to explore its epistemic mechanism.
+                    </p>
+
+                    <!-- Active Pramana Inspector Box -->
+                    <div id="pramana-detail" class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl space-y-4 transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <span id="pramana-sanskrit" class="text-2xl font-bold text-amber-400 font-cinzel">Anumāna (अनुमान)</span>
+                            <span id="pramana-badge" class="px-3 py-1 rounded-md bg-amber-500/20 text-amber-300 font-mono text-xs font-semibold border border-amber-500/30">Primary Focus</span>
+                        </div>
+                        <h4 id="pramana-english" class="text-lg font-bold text-white font-outfit">Indirect Inference</h4>
+                        <p id="pramana-desc" class="text-sm text-slate-300 leading-relaxed">
+                            Knowledge derived after prior perception. It bridges the gap between what is directly observed (the sign/Hetu) and what is unseen (the Sādhya).
+                        </p>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span>Modern Analogy: <strong id="pramana-analogy" class="text-slate-200">Deductive & Inductive Reasoning Engine</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive Radial Branch Visualization -->
+                <div class="lg:col-span-7 flex justify-center reveal-on-scroll stagger-1">
+                    <div class="relative w-full max-w-lg aspect-square flex items-center justify-center p-4">
+                        <!-- SVG Connecting Lines -->
+                        <svg class="absolute inset-0 w-full h-full pointer-events-none orbit-svg" viewBox="0 0 400 400">
+                            <circle cx="200" cy="200" r="110" fill="none" stroke="rgba(245, 158, 11, 0.15)" stroke-width="1.5" class="orbit-pulse-line" />
+                            <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(99, 102, 241, 0.1)" stroke-width="1" stroke-dasharray="4 4" />
+                            <line x1="200" y1="200" x2="200" y2="70" stroke="rgba(99, 102, 241, 0.4)" stroke-width="2" stroke-dasharray="4 4" />
+                            <line x1="200" y1="200" x2="330" y2="200" stroke="#f59e0b" stroke-width="3" />
+                            <line x1="200" y1="200" x2="200" y2="330" stroke="rgba(99, 102, 241, 0.4)" stroke-width="2" stroke-dasharray="4 4" />
+                            <line x1="200" y1="200" x2="70" y2="200" stroke="rgba(99, 102, 241, 0.4)" stroke-width="2" stroke-dasharray="4 4" />
+                        </svg>
+
+                        <!-- Center Core Node -->
+                        <div class="absolute z-10 w-28 h-28 rounded-full bg-slate-950 border-2 border-amber-500/40 flex flex-col items-center justify-center text-center p-2 shadow-2xl shadow-amber-500/10">
+                            <span class="text-[10px] font-mono text-amber-400 font-bold uppercase">Core</span>
+                            <span class="text-sm font-extrabold text-white font-outfit">PRAMĀṆA</span>
+                            <span class="text-[9px] text-slate-400">Valid Means</span>
+                        </div>
+
+                        <!-- Node 1: Pratyakṣa (Top) -->
+                        <button data-pramana="pratyaksa" class="pramana-node absolute top-4 left-1/2 -translate-x-1/2 z-20 w-36 p-3 rounded-xl text-center shadow-lg">
+                            <div class="text-xs font-mono text-indigo-400 font-semibold">01. Direct</div>
+                            <div class="text-sm font-bold text-white">Pratyakṣa</div>
+                            <div class="text-[10px] text-slate-400">Perception</div>
+                        </button>
+
+                        <!-- Node 2: Anumāna (Right - Highlighted) -->
+                        <button data-pramana="anumana" class="pramana-node active absolute right-2 top-1/2 -translate-y-1/2 z-20 w-36 p-3.5 rounded-xl text-center shadow-xl">
+                            <span class="absolute -top-2 -right-2 w-4 h-4 bg-amber-500 rounded-full flex items-center justify-center text-[9px] font-bold text-slate-950 shadow-md">✓</span>
+                            <div class="text-xs font-mono text-amber-400 font-bold">02. Indirect</div>
+                            <div class="text-sm font-black text-amber-300">Anumāna</div>
+                            <div class="text-[11px] font-medium text-slate-300">Inference</div>
+                        </button>
+
+                        <!-- Node 3: Upamāna (Bottom) -->
+                        <button data-pramana="upamana" class="pramana-node absolute bottom-4 left-1/2 -translate-x-1/2 z-20 w-36 p-3 rounded-xl text-center shadow-lg">
+                            <div class="text-xs font-mono text-indigo-400 font-semibold">03. Analogy</div>
+                            <div class="text-sm font-bold text-white">Upamāna</div>
+                            <div class="text-[10px] text-slate-400">Comparison</div>
+                        </button>
+
+                        <!-- Node 4: Śabda (Left) -->
+                        <button data-pramana="sabda" class="pramana-node absolute left-2 top-1/2 -translate-y-1/2 z-20 w-36 p-3 rounded-xl text-center shadow-lg">
+                            <div class="text-xs font-mono text-indigo-400 font-semibold">04. Testimony</div>
+                            <div class="text-sm font-bold text-white">Śabda</div>
+                            <div class="text-[10px] text-slate-400">Verbal Word</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 15 SECTION: WHAT IS ANUMĀNA? (3-Step Modern Metaphor) -->
+        <section class="py-16 px-6 md:px-12 max-w-7xl mx-auto my-8">
+            <div class="p-8 sm:p-12 rounded-3xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-xl reveal-on-scroll">
+                <div class="max-w-3xl mx-auto text-center space-y-4 mb-12">
+                    <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">Core Cognition Flow</span>
+                    <h2 class="text-3xl font-extrabold font-outfit text-white">WHAT IS ANUMĀNA IN SIMPLE WORDS?</h2>
+                    <p class="text-slate-300 text-sm md:text-base">Anumāna literally means "after-knowledge" (<span class="italic">anu</span> = after, <span class="italic">māna</span> = knowledge). You know something unobserved by processing what is observed.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+                    <div class="glass-card-interactive p-6 relative z-10">
+                        <div class="text-xs font-mono text-amber-400 font-bold mb-2">STEP A</div>
+                        <h3 class="text-lg font-bold text-white mb-2 font-outfit">1. Observe Something</h3>
+                        <p class="text-sm text-slate-400">You notice a visible mark or sign (<span class="text-amber-300 font-semibold">Hetu</span>), like smoke rising in the distance.</p>
+                    </div>
+
+                    <div class="glass-card-interactive p-6 relative z-10">
+                        <div class="text-xs font-mono text-indigo-400 font-bold mb-2">STEP B</div>
+                        <h3 class="text-lg font-bold text-white mb-2 font-outfit">2. Connect to Known Relation</h3>
+                        <p class="text-sm text-slate-400">You recall the universal invariable relation (<span class="text-indigo-300 font-semibold">Vyāpti</span>): wherever there is smoke, there is fire.</p>
+                    </div>
+
+                    <div class="glass-card-interactive p-6 relative z-10">
+                        <div class="text-xs font-mono text-emerald-400 font-bold mb-2">STEP C</div>
+                        <h3 class="text-lg font-bold text-white mb-2 font-outfit">3. Reach Unseen Conclusion</h3>
+                        <p class="text-sm text-slate-400">You conclude that fire (<span class="text-emerald-300 font-semibold">Sādhya</span>) is present right now on the hill (<span class="text-emerald-300 font-semibold">Pakṣa</span>).</p>
+                    </div>
+                </div>
+
+                <!-- Metaphor Clarification Disclaimer -->
+                <div class="mt-8 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-start gap-3">
+                    <svg class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span><strong>Educational Note:</strong> This 3-step sequence is a modern simplified visualization. Classical Nyāya formalizes this process into a precise 5-member syllogism (<span class="italic font-semibold">Pañcāvayava</span>) designed for convincing others in formal debate.</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 16, 17, 18 THE HERO FEATURE: NYĀYA INFERENCE ENGINE -->
+        <section id="engine" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12 reveal-on-scroll">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-xs font-mono uppercase font-bold">
+                    The Main Interactive Feature
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold font-outfit text-white">
+                    NYĀYA INFERENCE ENGINE
+                </h2>
+                <p class="text-slate-300 text-base md:text-lg">
+                    Select a logical case study and execute the 5-member Nyāya inference step-by-step.
+                </p>
+            </div>
+
+            <!-- Main Engine Workspace Card -->
+            <div class="engine-workspace p-6 sm:p-10 rounded-3xl space-y-8 reveal-on-scroll stagger-1">
+                <!-- Top Toolbar & Selector -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-slate-800/80">
+                    <div class="flex items-center gap-3">
+                        <label for="case-select" class="text-xs font-mono text-slate-400 uppercase font-semibold shrink-0">Case Study:</label>
+                        <select id="case-select" class="px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-white font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 shadow-inner">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div class="flex items-center gap-3">
+                        <button id="engine-prev-btn" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 text-xs font-mono font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            ← PREV
+                        </button>
+                        <button id="engine-run-btn" class="btn-glow px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/25 flex items-center gap-2">
+                            <span>RUN INFERENCE</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </button>
+                        <button id="engine-next-btn" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 text-xs font-mono font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            NEXT →
+                        </button>
+                        <button id="engine-reset-btn" class="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white transition-all" title="Reset Engine">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 18 Horizontal / Vertical Progress Indicator -->
+                <div class="engine-progress-bar space-y-2">
+                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 font-semibold">
+                        <span>INFERENCE PIPELINE ACCUMULATION</span>
+                        <span id="progress-step-counter" class="text-amber-400 font-bold font-mono">01 / 05</span>
+                    </div>
+                    <div class="grid grid-cols-5 gap-2.5">
+                        <div class="progress-step-pill active" data-step-pill="1">
+                            <div class="step-bar"></div>
+                            <span class="text-[10px] font-mono text-slate-400 mt-1.5 block truncate font-semibold">1. Pratijñā</span>
+                        </div>
+                        <div class="progress-step-pill" data-step-pill="2">
+                            <div class="step-bar"></div>
+                            <span class="text-[10px] font-mono text-slate-400 mt-1.5 block truncate font-semibold">2. Hetu</span>
+                        </div>
+                        <div class="progress-step-pill" data-step-pill="3">
+                            <div class="step-bar"></div>
+                            <span class="text-[10px] font-mono text-slate-400 mt-1.5 block truncate font-semibold">3. Udāharaṇa</span>
+                        </div>
+                        <div class="progress-step-pill" data-step-pill="4">
+                            <div class="step-bar"></div>
+                            <span class="text-[10px] font-mono text-slate-400 mt-1.5 block truncate font-semibold">4. Upanaya</span>
+                        </div>
+                        <div class="progress-step-pill" data-step-pill="5">
+                            <div class="step-bar"></div>
+                            <span class="text-[10px] font-mono text-slate-400 mt-1.5 block truncate font-semibold">5. Nigamana</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Step Display Panel -->
+                <div id="engine-card-display" class="relative min-h-[320px] p-6 sm:p-8 rounded-2xl flex flex-col justify-between">
+                    <!-- Dynamic Step Header -->
+                    <div>
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800/80">
+                            <div class="flex items-center gap-3">
+                                <span id="step-number-badge" class="px-3 py-1 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-extrabold text-sm border border-amber-500/30 shadow-sm">
+                                    STEP 01
+                                </span>
+                                <div>
+                                    <h3 id="step-sanskrit" class="text-2xl font-bold text-white font-cinzel">Pratijñā (प्रतिज्ञा)</h3>
+                                    <span id="step-role" class="text-xs text-slate-400 font-mono">Proposition / Initial Claim</span>
+                                </div>
+                            </div>
+
+                            <!-- "WHY?" Toggle Button -->
+                            <button id="step-why-btn" class="px-3.5 py-1.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 font-mono text-xs font-bold border border-indigo-500/30 flex items-center gap-1.5 transition-all">
+                                <span>Okay, but WHY?</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Statement Text -->
+                        <div class="my-6">
+                            <div class="text-xs font-mono text-slate-400 mb-1.5 font-semibold">STATEMENT IN CASE:</div>
+                            <div id="step-statement" class="text-2xl sm:text-3xl font-extrabold text-amber-300 font-outfit leading-snug">
+                                "The hill possesses fire."
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 17 The "WHY?" Drawer / Explanation Modal inside card -->
+                    <div id="step-why-drawer" class="hidden mt-4 p-5 rounded-xl bg-slate-900/90 border border-indigo-500/30 space-y-4">
+                        <!-- Toggle sub-tabs -->
+                        <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+                            <button id="tab-simple-btn" class="px-3 py-1 rounded-md text-xs font-mono font-bold bg-amber-500 text-slate-950 transition-all">In Simple Words</button>
+                            <button id="tab-technical-btn" class="px-3 py-1 rounded-md text-xs font-mono font-bold text-slate-400 hover:text-white transition-all">Technical Nyāya Definition</button>
+                        </div>
+
+                        <!-- Content 1: Simple Words -->
+                        <div id="why-simple-content" class="text-sm text-slate-200 leading-relaxed space-y-1">
+                            <p id="why-simple-text">This is the initial proposition or claim you want to establish. You state what you are asserting before introducing evidence.</p>
+                        </div>
+
+                        <!-- Content 2: Technical Definition -->
+                        <div id="why-technical-content" class="hidden text-sm text-slate-300 leading-relaxed font-mono space-y-1 text-xs bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <p id="why-technical-text">Sādhyavatttā-pratipādakaṁ vakyaṁ pratijñā. The statement expressing the locus (Pakṣa) as qualified by the inferable property (Sādhya).</p>
+                        </div>
+                    </div>
+
+                    <!-- Case Context summary bar -->
+                    <div class="mt-6 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2 font-mono">
+                        <span>Pakṣa (Subject): <strong id="summary-paksha" class="text-slate-200">Hill</strong></span>
+                        <span>Hetu (Reason): <strong id="summary-hetu" class="text-slate-200">Smoke</strong></span>
+                        <span>Sādhya (Target): <strong id="summary-sadhya" class="text-slate-200">Fire</strong></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 19 SECTION: VYĀPTI VISUALIZER -->
+        <section id="vyapti" class="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t border-slate-800/80" aria-label="Vyapti Visualizer">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-14 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">The Universal Relation</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-white">
+                    THE CONNECTION THAT MAKES INFERENCE WORK
+                </h2>
+                <p class="text-slate-300 text-base md:text-lg">
+                    Inference fails without <span class="text-amber-400 font-bold italic">Vyāpti</span> — the invariable concomitance between the reason (<span class="italic">Hetu</span>) and the target conclusion (<span class="italic">Sādhya</span>).
+                </p>
+            </div>
+
+            <!-- Interactive Vyapti Case Inspector -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Left: Interactive Tester Controls -->
+                <div class="lg:col-span-5 space-y-6 reveal-on-scroll stagger-1">
+                    <h3 class="text-xl font-bold text-white font-outfit">Test Concomitance Across Loci</h3>
+                    <p class="text-sm text-slate-300">
+                        Click different contexts to inspect how smoke and fire co-exist or dissociate:
+                    </p>
+
+                    <div class="space-y-3">
+                        <button data-vyapti-case="kitchen" class="vyapti-case-btn active w-full p-4 rounded-xl text-left flex items-center justify-between">
+                            <div>
+                                <div class="font-bold text-white text-sm font-outfit">1. Kitchen (Mahānasa)</div>
+                                <div class="text-xs text-slate-400">Positive Example (Anvaya-dṛṣṭānta)</div>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold border border-emerald-500/30">Smoke ✓ | Fire ✓</span>
+                        </button>
+
+                        <button data-vyapti-case="hill" class="vyapti-case-btn w-full p-4 rounded-xl text-left flex items-center justify-between">
+                            <div>
+                                <div class="font-bold text-white text-sm font-outfit">2. The Hill (Parvata)</div>
+                                <div class="text-xs text-slate-400">The Pakṣa (Subject under test)</div>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 text-xs font-mono font-bold border border-amber-500/30">Smoke ✓ | Fire (Inf) ✓</span>
+                        </button>
+
+                        <button data-vyapti-case="lake" class="vyapti-case-btn w-full p-4 rounded-xl text-left flex items-center justify-between">
+                            <div>
+                                <div class="font-bold text-white text-sm font-outfit">3. Deep Lake (Hrada)</div>
+                                <div class="text-xs text-slate-400">Negative Example (Vyatireka-dṛṣṭānta)</div>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-400 text-xs font-mono font-bold border border-slate-700">Smoke ✗ | Fire ✗</span>
+                        </button>
+
+                        <button data-vyapti-case="ironball" class="vyapti-case-btn w-full p-4 rounded-xl text-left flex items-center justify-between">
+                            <div>
+                                <div class="font-bold text-white text-sm font-outfit">4. Glowing Red Iron Ball</div>
+                                <div class="text-xs text-slate-400">Asymmetry Test (Fire without smoke)</div>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-md bg-rose-500/20 text-rose-300 text-xs font-mono font-bold border border-rose-500/30">Smoke ✗ | Fire ✓</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Visual Concomitance Diagram & Asymmetry Explanation -->
+                <div class="lg:col-span-7 reveal-on-scroll stagger-2">
+                    <div class="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6">
+                        <!-- Dynamic Visual Canvas/SVG -->
+                        <div id="vyapti-graphic-box" class="h-48 rounded-2xl bg-slate-950/90 border border-slate-800 flex items-center justify-center p-6 relative overflow-hidden transition-all duration-300">
+                            <div class="flex items-center gap-6 z-10">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 rounded-2xl bg-indigo-500/20 border border-indigo-500/50 text-indigo-300 font-bold flex flex-col items-center justify-center shadow-lg shadow-indigo-500/10">
+                                        <span class="text-[10px] uppercase font-mono">HETU</span>
+                                        <span class="text-sm font-semibold">💨 Smoke</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-center gap-1">
+                                    <span class="text-[10px] font-mono text-amber-400 uppercase tracking-widest font-semibold">Invariable Concomitance</span>
+                                    <svg class="w-24 h-6 text-amber-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-amber-300 font-bold flex flex-col items-center justify-center shadow-lg shadow-amber-500/10">
+                                        <span class="text-[10px] uppercase font-mono">SĀDHYA</span>
+                                        <span class="text-sm font-semibold">🔥 Fire</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Explanation Text -->
+                        <div class="space-y-3">
+                            <h4 id="vyapti-title" class="text-lg font-bold text-white font-outfit">Kitchen Case: Positive Concomitance (Anvaya)</h4>
+                            <p id="vyapti-explanation" class="text-sm text-slate-300 leading-relaxed">
+                                In the kitchen, both smoke (Hetu) and fire (Sādhya) are directly observed together. This establishes that smoke does not exist in isolation from fire.
+                            </p>
+                        </div>
+
+                        <!-- Asymmetry Callout -->
+                        <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+                            <div class="text-xs font-mono text-amber-400 font-bold flex items-center gap-1.5">
+                                <span>⚡ ASYMMETRY OF VYĀPTI</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Smoke guarantees Fire: <strong class="text-emerald-400 font-semibold">Wherever smoke, there fire (Valid)</strong>.<br/>
+                                Fire does NOT guarantee Smoke: <strong class="text-rose-400 font-semibold">Wherever fire, there smoke (Invalid - e.g. red hot iron ball)</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VYĀPTI TYPES EXPLAINER -->
+            <div class="mt-16 reveal-on-scroll stagger-2">
+                <div class="text-center max-w-2xl mx-auto mb-8">
+                    <span class="text-xs font-mono uppercase tracking-widest text-indigo-400 font-bold">Advanced Concept</span>
+                    <h3 class="text-2xl md:text-3xl font-extrabold font-outfit text-white mt-2">3 TYPES OF VYĀPTI-BASED INFERENCE</h3>
+                    <p class="text-slate-400 text-sm mt-2">Classical Nyāya classifies Anumāna by which type of concomitance examples are available.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <!-- Type 1 -->
+                    <div class="glass-card-interactive p-6 space-y-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold flex items-center justify-center">01</span>
+                            <span class="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wide">Most Common</span>
+                        </div>
+                        <h4 class="text-base font-bold text-white font-cinzel">Anvayavyatireki</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">Uses <strong class="text-emerald-300">both positive AND negative examples</strong>. The Hetu is present where Sādhya is (kitchen), and absent where Sādhya is absent (lake).</p>
+                        <div class="text-xs font-mono text-amber-300 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                            e.g., Smoke → Fire (kitchen ✓, lake ✗)
+                        </div>
+                    </div>
+                    <!-- Type 2 -->
+                    <div class="glass-card-interactive p-6 space-y-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 font-mono text-xs font-bold flex items-center justify-center">02</span>
+                            <span class="text-xs font-mono text-amber-400 font-bold uppercase tracking-wide">Positive Only</span>
+                        </div>
+                        <h4 class="text-base font-bold text-white font-cinzel">Kevalānvayī</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">Uses <strong class="text-amber-300">only positive examples</strong>. No negative case possible because the Sādhya is universal — it exists everywhere.</p>
+                        <div class="text-xs font-mono text-amber-300 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                            e.g., "Whatever exists is nameable" (no non-nameable thing exists)
+                        </div>
+                    </div>
+                    <!-- Type 3 -->
+                    <div class="glass-card-interactive p-6 space-y-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-7 h-7 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-400 font-mono text-xs font-bold flex items-center justify-center">03</span>
+                            <span class="text-xs font-mono text-rose-400 font-bold uppercase tracking-wide">Negative Only</span>
+                        </div>
+                        <h4 class="text-base font-bold text-white font-cinzel">Kevalavyatirekī</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">Uses <strong class="text-rose-300">only negative examples</strong>. The Hetu is established only via absence — wherever the Sādhya is absent, the Hetu is also absent.</p>
+                        <div class="text-xs font-mono text-amber-300 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                            e.g., "Whatever is not earthy has no natural fragrance" (no positive case of non-earthy fragrant thing)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 20 SECTION: PAKṢA / HETU / SĀDHYA (Visual Reasoning Triangle) -->
+        <section id="triad" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-14 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-indigo-400 font-bold">Structural Triad</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-white">
+                    THE REASONING TRIANGLE
+                </h2>
+                <p class="text-slate-300 text-base md:text-lg">
+                    Every valid Nyāya inference relies on the precise relationship between three core elements.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Interactive SVG Triangle Component -->
+                <div class="lg:col-span-6 flex justify-center reveal-on-scroll stagger-1">
+                    <div class="relative w-full max-w-md aspect-square">
+                        <svg class="w-full h-full" viewBox="0 0 300 300">
+                            <!-- Lines with drop shadows -->
+                            <line x1="150" y1="40" x2="50" y2="240" stroke="#3b82f6" stroke-width="3" stroke-dasharray="6 4" class="orbit-pulse-line" />
+                            <line x1="150" y1="40" x2="250" y2="240" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6 4" class="orbit-pulse-line" />
+                            <line x1="50" y1="240" x2="250" y2="240" stroke="#10b981" stroke-width="3" />
+
+                            <!-- Edge Labels -->
+                            <text x="80" y="130" fill="#93c5fd" font-size="10" font-family="monospace" font-weight="bold">Pakṣadharmatā</text>
+                            <text x="210" y="130" fill="#fde047" font-size="10" font-family="monospace" font-weight="bold">Sādhyavattā</text>
+                            <text x="135" y="260" fill="#6ee7b7" font-size="10" font-family="monospace" font-weight="bold">Vyāpti</text>
+
+                            <!-- Node 1: Pakṣa (Top) -->
+                            <g class="triangle-node active cursor-pointer" data-triad="paksha">
+                                <circle cx="150" cy="40" r="28" fill="#0f172a" stroke="#3b82f6" stroke-width="3" />
+                                <text x="150" y="38" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="bold">PAKṢA</text>
+                                <text x="150" y="50" text-anchor="middle" fill="#94a3b8" font-size="9">(Hill)</text>
+                            </g>
+
+                            <!-- Node 2: Hetu (Bottom Left) -->
+                            <g class="triangle-node cursor-pointer" data-triad="hetu">
+                                <circle cx="50" cy="240" r="28" fill="#0f172a" stroke="#10b981" stroke-width="3" />
+                                <text x="50" y="238" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="bold">HETU</text>
+                                <text x="50" y="250" text-anchor="middle" fill="#94a3b8" font-size="9">(Smoke)</text>
+                            </g>
+
+                            <!-- Node 3: Sādhya (Bottom Right) -->
+                            <g class="triangle-node cursor-pointer" data-triad="sadhya">
+                                <circle cx="250" cy="240" r="28" fill="#0f172a" stroke="#f59e0b" stroke-width="3" />
+                                <text x="250" y="238" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="bold">SĀDHYA</text>
+                                <text x="250" y="250" text-anchor="middle" fill="#94a3b8" font-size="9">(Fire)</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right: Detailed Node Inspector Card -->
+                <div class="lg:col-span-6 reveal-on-scroll stagger-2">
+                    <div id="triad-inspector" class="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 transition-all duration-300">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                            <span id="triad-term" class="text-2xl font-bold font-cinzel text-amber-400">Pakṣa (पक्ष)</span>
+                            <span id="triad-role" class="px-3 py-1 rounded-md bg-blue-500/20 text-blue-300 font-mono text-xs font-bold border border-blue-500/30">The Locus / Subject</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-xs font-mono text-slate-400 uppercase font-semibold">Definition:</h4>
+                                <p id="triad-def" class="text-slate-200 text-sm md:text-base leading-relaxed mt-1">
+                                    The subject or place under consideration where the inferable property (Sādhya) is suspected or to be established.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 class="text-xs font-mono text-slate-400 uppercase font-semibold">Example in Fire Case:</h4>
+                                <p id="triad-ex" class="text-amber-300 font-semibold text-base mt-1">
+                                    "The Hill" (Parvata)
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800">
+                                <h4 class="text-xs font-mono text-indigo-400 uppercase font-bold">Key Epistemic Condition:</h4>
+                                <p id="triad-condition" class="text-xs text-slate-300 mt-1">
+                                    Pakṣadharmatā: The reason (Hetu) must actually be present at this locus (the hill must actually have smoke).
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-slate-500 font-mono text-center">
+                            Click nodes in the triangle above to inspect Pakṣa, Hetu, or Sādhya
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 21 & 22 SECTION: BUILD YOUR OWN INFERENCE (Playground Sandbox) -->
+        <section id="playground" class="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t border-slate-800/80">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">Interactive Sandbox</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold font-outfit text-white">
+                    YOUR TURN.
+                </h2>
+                <p class="text-slate-300 text-base md:text-lg">
+                    Construct your own custom 5-member Nyāya inference from educational premises.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Form Inputs Panel -->
+                <div class="lg:col-span-5 p-6 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-6 reveal-on-scroll stagger-1">
+                    <h3 class="text-lg font-bold text-white font-outfit">Select Reasoning Parameters</h3>
+
+                    <!-- Input 1: Paksha -->
+                    <div class="space-y-2">
+                        <label for="play-paksha" class="text-xs font-mono text-slate-300 uppercase block font-semibold">1. Subject (Pakṣa):</label>
+                        <select id="play-paksha" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-700/80 text-white text-sm font-semibold focus:ring-2 focus:ring-amber-500/50 shadow-inner">
+                            <option value="Hill">The Hill</option>
+                            <option value="Valley River">The Valley River</option>
+                            <option value="Sound">Sound</option>
+                            <option value="Lake">The Lake</option>
+                        </select>
+                    </div>
+
+                    <!-- Input 2: Hetu -->
+                    <div class="space-y-2">
+                        <label for="play-hetu" class="text-xs font-mono text-slate-300 uppercase block font-semibold">2. Reason (Hetu):</label>
+                        <select id="play-hetu" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-700/80 text-white text-sm font-semibold focus:ring-2 focus:ring-amber-500/50 shadow-inner">
+                            <option value="Smoke">Presence of Smoke</option>
+                            <option value="Muddy Swelling">Muddy Swelling of Water</option>
+                            <option value="Productivity">Being a Produced Quality</option>
+                            <option value="Coldness">Being Cold</option>
+                        </select>
+                    </div>
+
+                    <!-- Input 3: Sadhya -->
+                    <div class="space-y-2">
+                        <label for="play-sadhya" class="text-xs font-mono text-slate-300 uppercase block font-semibold">3. Conclusion (Sādhya):</label>
+                        <select id="play-sadhya" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-700/80 text-white text-sm font-semibold focus:ring-2 focus:ring-amber-500/50 shadow-inner">
+                            <option value="Fire">Presence of Fire</option>
+                            <option value="Upstream Rain">Upstream Rainfall</option>
+                            <option value="Impermanence">Impermanence (Non-eternal)</option>
+                            <option value="Eternality">Eternality</option>
+                        </select>
+                    </div>
+
+                    <button id="play-build-btn" class="btn-glow w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                        <span>BUILD INFERENCE</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Preview Output Display -->
+                <div class="lg:col-span-7 reveal-on-scroll stagger-2">
+                    <div class="p-6 sm:p-8 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-6">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                            <h3 class="text-lg font-bold text-white font-outfit">Generated 5-Member Structure</h3>
+                            <span id="play-validity-badge" class="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold border border-emerald-500/30">
+                                VALID NYĀYA INFERENCE
+                            </span>
+                        </div>
+
+                        <!-- Generated 5 Cards List -->
+                        <div id="play-steps-container" class="space-y-3">
+                            <!-- Cards inserted dynamically -->
+                        </div>
+
+                        <div id="play-feedback-box" class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 space-y-1">
+                            <div class="font-bold text-amber-400 font-mono">EDUCATIONAL VALIDATION STATUS:</div>
+                            <p id="play-feedback-text">This combination reflects a recognized, valid Nyāya inference pattern.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 23 & 24 SECTION: HETVĀBHĀSA (Fallacies of Reason) -->
+        <section id="hetvabhasa" class="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t border-slate-800/80">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-14 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-rose-400 font-bold">Defective Reasoning</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-white">
+                    HETVĀBHĀSA: WHEN REASON FAILS
+                </h2>
+                <p class="text-slate-300 text-base md:text-lg">
+                    In Nyāya, a flawed reason is called <span class="text-rose-400 font-bold italic">Hetvābhāsa</span> ("fallacy of reason"). Inspect how invalid arguments are diagnosed and dismantled.
+                </p>
+            </div>
+
+            <!-- Fallacies Card Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <!-- Fallacy 1 -->
+                <div class="fallacy-card p-6 cursor-pointer reveal-on-scroll stagger-1 active" data-fallacy="savyabhicara">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-mono text-rose-400 font-bold">01. SAVYABHICĀRA</span>
+                        <span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 text-[10px] font-mono font-bold border border-rose-500/20">Irregular</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 font-cinzel">Inconclusive Reason</h3>
+                    <p class="text-xs text-slate-400 mb-4 leading-relaxed">The reason is present where the Sādhya exists, but also where it does NOT exist.</p>
+                    <div class="text-xs font-mono text-amber-300 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                        "The hill has fire because it is knowable."
+                    </div>
+                </div>
+
+                <!-- Fallacy 2 -->
+                <div class="fallacy-card p-6 cursor-pointer reveal-on-scroll stagger-2" data-fallacy="viruddha">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-mono text-rose-400 font-bold">02. VIRUDDHA</span>
+                        <span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 text-[10px] font-mono font-bold border border-rose-500/20">Contradictory</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 font-cinzel">Contradictory Reason</h3>
+                    <p class="text-xs text-slate-400 mb-4 leading-relaxed">The reason actually proves the OPPOSITE of what was claimed.</p>
+                    <div class="text-xs font-mono text-amber-300 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                        "Sound is eternal because it is produced."
+                    </div>
+                </div>
+
+                <!-- Fallacy 3 -->
+                <div class="fallacy-card p-6 cursor-pointer reveal-on-scroll stagger-3" data-fallacy="badhita">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-mono text-rose-400 font-bold">03. BĀDHITA</span>
+                        <span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 text-[10px] font-mono font-bold border border-rose-500/20">Ousted</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 font-cinzel">Perceptual Contradiction</h3>
+                    <p class="text-xs text-slate-400 mb-4 leading-relaxed">The conclusion is directly contradicted by a stronger Pramāṇa (Perception).</p>
+                    <div class="text-xs font-mono text-amber-300 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                        "Fire is cold because it is a substance."
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fallacy Inspector Modal / Detail Container -->
+            <div id="fallacy-detail-box" class="p-6 sm:p-8 rounded-3xl space-y-4 reveal-on-scroll stagger-4 transition-all duration-300">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <span id="fallacy-name" class="text-2xl font-bold text-rose-400 font-cinzel">Savyabhicāra (सव्यभिचार)</span>
+                    <span class="text-xs font-mono text-slate-400">Click fallacy cards above to inspect</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-300">
+                    <div>
+                        <h4 class="text-xs font-mono text-slate-400 uppercase font-semibold">Why It Fails:</h4>
+                        <p id="fallacy-fail-reason" class="mt-1 leading-relaxed text-slate-200">
+                            "Knowability" exists in fire, but also in water, rocks, and thoughts. Because it is everywhere, it fails to specify fire.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-mono text-slate-400 uppercase font-semibold">Academic Classification:</h4>
+                        <p id="fallacy-class" class="mt-1 leading-relaxed font-mono text-xs text-amber-300">
+                            Anaikāntika (Inconclusive) — Breach of exclusive concomitance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 25 PRACTICE MODE (Interactive Discovery Game / Quiz) -->
+        <section id="practice" class="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t border-slate-800/80">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold">Interactive Discovery Game</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-white">
+                    PRACTICE YOUR REASONING
+                </h2>
+                <p class="text-slate-300 text-base md:text-lg">
+                    Test your understanding of Nyāya inference through interactive challenge prompts.
+                </p>
+            </div>
+
+            <!-- Quiz Card Container -->
+            <div class="max-w-2xl mx-auto p-6 sm:p-10 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 reveal-on-scroll stagger-1">
+                <!-- Quiz Header Progress -->
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <span id="quiz-progress-text" class="text-xs font-mono text-amber-400 font-bold">QUESTION 01 OF 12</span>
+                    <span id="quiz-score-text" class="text-xs font-mono text-slate-400 font-semibold">Score: 0</span>
+                </div>
+                <!-- Quiz Progress Bar -->
+                <div class="w-full h-1.5 rounded-full bg-slate-800/80 overflow-hidden -mt-2">
+                    <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all duration-500 ease-out" style="width: 8%"></div>
+                </div>
+
+                <!-- Question Prompt -->
+                <div class="space-y-4">
+                    <h3 id="quiz-question" class="text-xl sm:text-2xl font-bold text-white font-outfit leading-relaxed">
+                        In the classic inference "The hill has fire because it has smoke", what is the HETU (Reason)?
+                    </h3>
+                </div>
+
+                <!-- Answer Options -->
+                <div id="quiz-options" class="space-y-3">
+                    <!-- Options dynamically rendered -->
+                </div>
+
+                <!-- Quiz Feedback Drawer -->
+                <div id="quiz-feedback" class="hidden p-4 rounded-xl bg-slate-950/90 border border-slate-800 text-sm space-y-2">
+                    <div id="quiz-feedback-title" class="font-bold text-emerald-400 font-outfit">Exactly right! ✓</div>
+                    <p id="quiz-feedback-desc" class="text-slate-300 text-xs leading-relaxed">Smoke is the observed sign or reason (Hetu) that establishes the presence of fire.</p>
+                    <button id="quiz-next-btn" class="btn-glow mt-2 px-5 py-2.5 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs font-mono shadow-md">
+                        NEXT QUESTION →
+                    </button>
+                </div>
+
+                <!-- Final Celebration Banner (Hidden by default) -->
+                <div id="quiz-celebration" class="hidden text-center space-y-6 py-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 text-3xl shadow-lg shadow-amber-500/20">
+                        🔥
+                    </div>
+                    <h3 class="text-3xl font-extrabold text-white font-outfit">
+                        YOU JUST RAN A NYĀYA INFERENCE.
+                    </h3>
+                    <p class="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
+                        You didn't just memorize the logic — you understood how classical Indian reasoning constructs knowledge from observation and universal relation.
+                    </p>
+                    <button id="quiz-restart-btn" class="btn-glow px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-sm font-mono shadow-lg shadow-amber-500/25">
+                        REPLAY CHALLENGE
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- GLOSSARY SECTION -->
+        <section id="glossary" class="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t border-slate-800/80" aria-label="Sanskrit Glossary">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-14 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">Reference</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-white">SANSKRIT GLOSSARY</h2>
+                <p class="text-slate-300 text-base">Every key term used in Nyāya logic — defined clearly.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 reveal-on-scroll stagger-1">
+                <!-- Term: Anumāna -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-amber-400 font-cinzel">Anumāna</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">अनुमान</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Inference / After-knowledge.</strong> Knowledge derived by reasoning from an observed sign. The primary subject of Nyāya logic.</p>
+                </div>
+                <!-- Term: Pramāṇa -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-indigo-400 font-cinzel">Pramāṇa</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">प्रमाण</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Valid Means of Knowledge.</strong> Nyāya recognises 4: Pratyakṣa, Anumāna, Upamāna, Śabda.</p>
+                </div>
+                <!-- Term: Pakṣa -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-blue-400 font-cinzel">Pakṣa</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">पक्ष</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Locus / Subject.</strong> The place or entity about which an inference is made (e.g., "the hill").</p>
+                </div>
+                <!-- Term: Hetu -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-amber-400 font-cinzel">Hetu</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">हेतु</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Reason / Inferential Mark.</strong> The observed sign that triggers inference (e.g., smoke → fire).</p>
+                </div>
+                <!-- Term: Sādhya -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-rose-400 font-cinzel">Sādhya</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">साध्य</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Inferable Property / Goal.</strong> The unobserved property to be established (e.g., fire on the hill).</p>
+                </div>
+                <!-- Term: Vyāpti -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-emerald-400 font-cinzel">Vyāpti</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">व्याप्ति</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Invariable Concomitance.</strong> The universal, unfailing relation between Hetu and Sādhya. The backbone of inference.</p>
+                </div>
+                <!-- Term: Dṛṣṭānta -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-purple-400 font-cinzel">Dṛṣṭānta</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">दृष्टान्त</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Exemplar.</strong> The familiar undisputed example that demonstrates Vyāpti (e.g., "as in a kitchen").</p>
+                </div>
+                <!-- Term: Pratijñā -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-amber-400 font-cinzel">Pratijñā</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">प्रतिज्ञा</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Proposition (Step 1).</strong> The initial claim to be established (e.g., "The hill has fire").</p>
+                </div>
+                <!-- Term: Udāharaṇa -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-indigo-400 font-cinzel">Udāharaṇa</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">उदाहरण</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Universal Example (Step 3).</strong> States the invariable rule backed by an undisputed example.</p>
+                </div>
+                <!-- Term: Upanaya -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-teal-400 font-cinzel">Upanaya</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">उपनय</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Application (Step 4).</strong> Applies the universal Vyāpti rule to the specific subject under examination.</p>
+                </div>
+                <!-- Term: Nigamana -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-amber-400 font-cinzel">Nigamana</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">निगमन</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Conclusion (Step 5).</strong> Restates the original proposition as now proven through evidence and universal law.</p>
+                </div>
+                <!-- Term: Hetvābhāsa -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-rose-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-rose-400 font-cinzel">Hetvābhāsa</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">हेत्वाभास</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Fallacy of Reason.</strong> A pseudo-reason that appears valid but is actually defective (Savyabhicāra, Viruddha, Bādhita).</p>
+                </div>
+                <!-- Term: Pramā -->
+                <div class="glossary-term-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/40 transition-all group">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-lg font-bold text-emerald-400 font-cinzel">Pramā</span>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded shrink-0">प्रमा</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-slate-100">Correct / Valid Knowledge.</strong> Knowledge that accurately corresponds to reality — the ultimate goal of applying Pramāṇas.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 37 & 38 & 39 ACADEMIC TRANSPARENCY, SOURCES & ABOUT NYAYAX -->
+        <section id="sources" class="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t border-slate-800/80 space-y-16">
+            <!-- About Nyayax & Academic Transparency Card -->
+            <div class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6 reveal-on-scroll">
+                <div class="flex items-center gap-3">
+                    <span class="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </span>
+                    <h3 class="text-2xl font-bold font-outfit text-white">About Nyayax & Academic Transparency</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-300">
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-white font-outfit">What is Nyayax?</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Nyayax is an interactive educational web experience designed to make classical Nyāya logic and inference (<span class="italic font-semibold">Anumāna</span>) accessible through visual manipulation and interactive simulation.
+                        </p>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-white font-outfit">Why Was It Created?</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Traditional philosophy texts often present formal logic in dense prose. Nyayax turns logical structures into something students can see, step through, test, and question.
+                        </p>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-white font-outfit">Academic Disclaimer</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed italic border-l-2 border-amber-500/50 pl-3">
+                            "Nyayax is an educational visualization. Its inference engine simplifies selected Nyāya concepts for interactive learning and should not be treated as a complete formalization of the Nyāya philosophical system."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scholarly Sources & References -->
+            <div class="space-y-6 reveal-on-scroll stagger-1">
+                <h3 class="text-2xl font-bold font-outfit text-white">Scholarly References & Further Reading</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300">
+                    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2 hover:border-amber-500/30 transition-all">
+                        <div class="font-bold text-white text-sm font-outfit">Bimal Krishna Matilal (1998)</div>
+                        <p class="text-slate-400"><em>The Character of Logic in India</em>. State University of New York Press.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2 hover:border-amber-500/30 transition-all">
+                        <div class="font-bold text-white text-sm font-outfit">Karl H. Potter (Ed.) (1977)</div>
+                        <p class="text-slate-400"><em>Encyclopedia of Indian Philosophies, Vol. II: Nyāya-Vaiśeṣika</em>. Princeton University Press.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2 hover:border-amber-500/30 transition-all">
+                        <div class="font-bold text-white text-sm font-outfit">Sarvepalli Radhakrishnan (1923)</div>
+                        <p class="text-slate-400"><em>Indian Philosophy, Vol. II</em>. Oxford University Press.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2 hover:border-amber-500/30 transition-all">
+                        <div class="font-bold text-white text-sm font-outfit">Stanford Encyclopedia of Philosophy</div>
+                        <p class="text-slate-400"><em>Epistemology in Classical Indian Philosophy (Nyāya)</em>. Peer-reviewed academic entry.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-12 px-6 md:px-12 text-slate-400 text-xs">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <span class="font-black text-white text-base font-outfit tracking-wider">NYAYAX</span>
+                <span class="text-slate-400">— Ancient reasoning. Reimagined.</span>
+            </div>
+            <div>
+                <span>Designed for College Students, Computer Science & Epistemology Learners.</span>
+            </div>
+            <div class="font-mono text-amber-400 font-semibold">
+                Frontend-Only Educational Project
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Modules -->
+    <script type="module" src="js/components/app.js"></script>
+</body>
+</html>

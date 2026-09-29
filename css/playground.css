@@ -1,0 +1,28 @@
+/* ==========================================================================
+   PLAYGROUND SANDBOX STYLES
+   ========================================================================== */
+
+#play-steps-container .play-step-card {
+  background: rgba(10, 13, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.85rem;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, background 0.2s ease;
+  animation: playCardSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+#play-steps-container .play-step-card:hover {
+  transform: translateX(4px);
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(18, 23, 35, 0.95);
+}
+
+@keyframes playCardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

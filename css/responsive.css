@@ -1,0 +1,95 @@
+/* ==========================================================================
+   RESPONSIVE UTILITIES & MOBILE OPTIMIZATIONS
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .hero-card {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #ambient-spotlight {
+    display: none; /* Save battery/GPU on mobile touchscreens */
+  }
+
+  .engine-progress-bar .grid-cols-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.35rem;
+  }
+
+  .progress-step-pill span {
+    font-size: 0.65rem !important;
+  }
+
+  #step-statement {
+    font-size: 1.35rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .engine-workspace {
+    padding: 1.25rem !important;
+  }
+
+  .pramana-node {
+    width: 28% !important;
+    padding: 0.5rem !important;
+  }
+
+  .pramana-node.active {
+    width: 32% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .pramana-node {
+    width: 45% !important;
+    padding: 0.65rem 0.5rem !important;
+  }
+
+  .pramana-node.active {
+    width: 48% !important;
+  }
+
+  #triangle-svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .hero-card {
+    padding: 1.25rem !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .pramana-node {
+    width: 75% !important;
+    margin: 0 auto;
+    font-size: 0.75rem !important;
+  }
+
+  .pramana-node.active {
+    width: 80% !important;
+  }
+
+  .orbit-svg {
+    transform: scale(0.85);
+    transform-origin: center center;
+  }
+
+  #triangle-svg {
+    transform: scale(0.88);
+    transform-origin: center center;
+  }
+
+  .glossary-term-card {
+    padding: 1rem !important;
+  }
+
+  .quiz-opt-btn {
+    padding: 0.75rem !important;
+    font-size: 0.8rem !important;
+  }
+}

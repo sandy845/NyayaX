@@ -1,0 +1,23 @@
+# OS / System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor & IDE files
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Local dev notes & drafts
+*.log
+*.bak
+*.swp
+*.tmp
+
+# Node (if you ever add npm tools later)
+node_modules/
+npm-debug.log*
+
+# Live Server config (local only)
+.liveserverrc
